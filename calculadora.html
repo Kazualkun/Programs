@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron&display=swap" rel="stylesheet">
+    <style>
+        body,
+        html {
+            background-color: #DCDCDC;
+        }
+
+        div#calculator {
+            margin: auto;
+            width: 550px;
+            height: 700px;
+            border: none;
+            background-color: #363636;
+            border-radius: 32px;
+            font-family: 'Orbitron', sans-serif;
+            box-shadow: 10px 10px 15px 3px;
+        }
+
+        #screen {
+            font-family: inherit;
+            font-size: 60px;
+            width: 510px;
+            height: 130px;
+            margin: 40px 20px;
+            border: none;
+            border-radius: 24px;
+            box-shadow: inset 5px 5px 30px gray;
+        }
+
+        #buttonContainer {
+            margin-left: 20px;
+            display: grid;
+            grid-template-columns: 95px 95px 95px 95px 95px;
+            grid-gap: 8px;
+            grid-template-rows: 100px 100px 100px 100px;
+        }
+
+        button {
+            outline: none;
+            cursor: pointer;
+            border: none;
+            border-radius: 12px;
+            background-color: dimgray;
+            color: whitesmoke;
+            font: inherit;
+            font-size: 25px;
+            box-shadow: 5px 3px 5px black;
+        }
+
+        button:hover {
+            box-shadow: inset 5px 3px 15px black;
+            background-color: rgb(94, 94, 94);
+        }
+
+        #cleaner {
+            font-size: 30px;
+        }
+
+        #equal {
+            height: 206px;
+            font-size: 60px;
+            background-color: rgb(48, 250, 48);
+        }
+    </style>
+</head>
+<body>
+    <div id="calculator">
+        <div id="screenContainer">
+            <input type="text" id='screen' disabled='true'>
+        </div>
+        <div id="buttonContainer">
+            <button id='one' onclick='addToScreen("1")'>1</button>
+            <button id='two' onclick='addToScreen("2")'>2</button>
+            <button id='three' onclick='addToScreen("3")'>3</button>
+            <button id='multiplier' onclick='addToScreen("*")'>*</button>
+            <button id="cleaner" onclick='clearScreen()'>C</button>
+            <button id='four' onclick='addToScreen("4")'>4</button>
+            <button id='five' onclick='addToScreen("5")'>5</button>
+            <button id='six' onclick='addToScreen("6")'>6</button>
+            <button id='divider' onclick='addToScreen("/")'>/</button>
+            <button id='delete' onclick='deleteLastCharacter()'>&larr;</button>
+            <button id='seven' onclick='addToScreen("7")'>7</button>
+            <button id='eight' onclick='addToScreen("8")'>8</button>
+            <button id='nine' onclick='addToScreen("9")'>9</button>
+            <button id='plus' onclick='addToScreen("+")'>+</button>
+            <button id='equal' onclick='calculate()'>=</button>
+            <button id='zero' onclick='addToScreen("0")'>0</button>
+            <button id='dot' onclick='addToScreen(".")'>.</button>
+            <button id='dbzero' onclick='addToScreen("00")'>00</button>
+            <button id='minus' onclick='addToScreen("-")'>-</button>
+        </div>
+    </div>
+    <div class="voltar">
+        <a href="index.html"> <button>Voltar a página inicial</button></a>
+     </div>
+</body>
+<script>
+    let screen = document.querySelector('#screen');
+
+    function addToScreen(value) {
+        const operationSigns = ['*', '+', '-', '/', '.'];
+        screen.value += value;
+        if (operationSigns.includes(value)) {
+            let valorAnterior = screen.value.length - 2;
+            if (operationSigns.includes(screen.value[valorAnterior])) {
+                screen.value = screen.value.substring(0, screen.value.length - 2);
+                screen.value += value;
+            }
+        }
+        if (operationSigns.includes(screen.value[0])) {
+            screen.value = '';
+        }
+    }
+
+    function clearScreen() {
+        screen.value = '';
+    }
+
+    function deleteLastCharacter() {
+        screen.value = screen.value.substring(0, screen.value.length - 1);
+    }
+
+    function calculate() {
+        if (screen.value.includes('/0')) {
+            screen.value = 'IMPOSSÍVEL DIVIDIR POR 0';
+        } else {
+            screen.value = eval(screen.value);
+        }
+    }
+</script>
+</html>
+

@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro de Alunos</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            padding: 20px;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+        }
+
+        .table-container {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Registro de Alunos</h1>
+
+    <div class="container">
+        <form id="formulario-add">
+            <div class="form-group">
+                <label for="ra">RA:</label>
+                <input id="ra" name="ra" type="text" class="form-control" pattern="[0-9]{6,}" required>
+            </div>
+            <div class="form-group">
+                <label for="nome">Nome:</label>
+                <input id="nome" name="nome" type="text" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label for="nota1">Nota 1:</label>
+                <input id="nota1" name="nota1" type="number" step="0.01" min="0" max="10" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label for="nota2">Nota 2:</label>
+                <input id="nota2" name="nota2" type="number" step="0.01" min="0" max="10" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label for="nota3">Nota 3:</label>
+                <input id="nota3" name="nota3" type="number" step="0.01" min="0" max="10" class="form-control" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Adicionar</button>
+        </form>
+
+        <div class="table-container">
+            <table id="tab-alunos" class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>RA</th>
+                        <th>Nome</th>
+                        <th>Nota 1</th>
+                        <th>Nota 2</th>
+                        <th>Nota 3</th>
+                        <th>Média Final</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+
+        <div class="voltar">
+            <a href="index.html"> <button>Voltar a página inicial</button></a>
+        </div>
+
+        <div class="excluir">
+            <button id="btn-excluir" class="btn btn-danger">Excluir Último Registro</button>
+        </div>
+
+        <ul id="mensagens-de-erro"></ul>
+    </div>
+
+    <script>
+        const API_URL = 'https://644c464617e2663b9d03bd68.mockapi.io/alunos';
+
+        function calcularMedia(nota1, nota2, nota3) {
+            const media = (nota1 + nota2 + nota3) / 3;
+            return media.toFixed(2);
+        }
+
+        function exibirMensagemDeErro(mensagem) {
+            const mensagensDeErro = document.getElementById('mensagens-de-erro');
+            mensagensDeErro.innerHTML = '';
+            const li = document.createElement('li');
+            li.innerText = mensagem;
+            mensagensDeErro.appendChild(li);
+        }
+
+        function obterAlunos() {
+            fetch(API_URL)
+                .then(response => response.json())
+                .then(alunos => {
+                    const tabelaAlunos = document.getElementById('tab-alunos').getElementsByTagName('tbody')[0];
+                    tabelaAlunos.innerHTML = '';
+
+                    alunos.forEach(aluno => {
+                        const row = tabelaAlunos.insertRow();
+
+                        const raCell = row.insertCell();
+                        raCell.innerText = aluno.ra;
+
+                        const nomeCell = row.insertCell();
+                        nomeCell.innerText = aluno.nome;
+
+                        const nota1Cell = row.insertCell();
+                        nota1Cell.innerText = aluno.nota1;
+
+                        const nota2Cell = row.insertCell();
+                        nota2Cell.innerText = aluno.nota2;
+
+                        const nota3Cell = row.insertCell();
+                        nota3Cell.innerText = aluno.nota3;
+
+                        const mediaCell = row.insertCell();
+                        mediaCell.innerText = aluno.mediaFinal;
+                    });
+                })
+                .catch(error => {
+                    exibirMensagemDeErro('Erro ao obter alunos. Por favor, tente novamente mais tarde.');
+                });
+        }
+
+        function verificarRAExistente(ra) {
+            return fetch(API_URL + `?ra=${ra}`)
+                .then(response => response.json())
+                .then(alunos => alunos.length > 0);
+        }
+
+        function adicionarAluno(event) {
+            event.preventDefault();
+
+            const form = event.target;
+            const raInput = form.elements['ra'];
+            const nomeInput = form.elements['nome'];
+            const nota1Input = form.elements['nota1'];
+            const nota2Input = form.elements['nota2'];
+            const nota3Input = form.elements['nota3'];
+
+            const ra = raInput.value;
+            const nome = nomeInput.value;
+            const nota1 = parseFloat(nota1Input.value);
+            const nota2 = parseFloat(nota2Input.value);
+            const nota3 = parseFloat(nota3Input.value);
+
+            verificarRAExistente(ra)
+                .then(existe => {
+                    if (existe) {
+                        exibirMensagemDeErro('RA já existente. Por favor, insira um RA diferente.');
+                    } else {
+                        const mediaFinal = calcularMedia(nota1, nota2, nota3);
+
+                        const novoAluno = {
+                            ra,
+                            nome,
+                            nota1,
+                            nota2,
+                            nota3,
+                            mediaFinal
+                        };
+
+                        fetch(API_URL, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify(novoAluno)
+                        })
+                            .then(() => {
+                                raInput.value = '';
+                                nomeInput.value = '';
+                                nota1Input.value = '';
+                                nota2Input.value = '';
+                                nota3Input.value = '';
+                                obterAlunos();
+                            })
+                            .catch(error => {
+                                exibirMensagemDeErro('Erro ao adicionar aluno. Por favor, tente novamente mais tarde.');
+                            });
+                    }
+                })
+                .catch(error => {
+                    exibirMensagemDeErro('Erro ao verificar RA existente. Por favor, tente novamente mais tarde.');
+                });
+        }
+
+        function excluirUltimoRegistro() {
+            const tabelaAlunos = document.getElementById('tab-alunos').getElementsByTagName('tbody')[0];
+            const rowCount = tabelaAlunos.rows.length;
+
+            if (rowCount > 0) {
+                tabelaAlunos.deleteRow(rowCount - 1);
+            }
+        }
+
+        function configurarEventos() {
+            const formularioAdd = document.getElementById('formulario-add');
+            formularioAdd.addEventListener('submit', adicionarAluno);
+
+            const btnExcluir = document.getElementById('btn-excluir');
+            btnExcluir.addEventListener('click', excluirUltimoRegistro);
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            obterAlunos();
+            configurarEventos();
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Passei de semestre?</title>
+    <style>
+        body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #DCDCDC;
+            font-family: Arial, sans-serif;
+        }
+
+        .question {
+            text-align: center;
+            font-size: 30px;
+            margin-bottom: 20px;
+        }
+
+        .button-container {
+            display: flex;
+            justify-content: center;
+        }
+
+        .button {
+            display: inline-block;
+            padding: 10px 20px;
+            font-size: 20px;
+            border: none;
+            border-radius: 5px;
+            margin: 0 10px;
+            cursor: pointer;
+            transition: all 0.3s ease-in-out;
+        }
+
+        #no-button {
+            position: relative;
+        }
+
+        #no-button:hover {
+            transition: transform 0.3s;
+        }
+    </style>
+</head>
+<body>
+    <div class="question">
+        <p>Passei de semestre?</p>
+    </div>
+    <div class="button-container">
+        <button id="yes-button" onclick="window.location.href='imagens/rick%20rolled.mp4'" class="button">Sim</button>
+        <button id="no-button" class="button">Não</button>
+    </div>
+
+    <div class="voltar">
+       <a href="index.html"> <button>Voltar a página inicial</button></a>
+    </div>
+
+    <script>
+        var noButton = document.querySelector('#no-button');
+        var attemptCount = 0;
+
+        function moveButton() {
+            attemptCount++;
+
+            if (attemptCount >= 5) {
+                noButton.removeEventListener('mouseover', moveButton);
+                noButton.innerHTML = 'Sim';
+                noButton.addEventListener('click', function() {
+                    window.location.href = 'imagens/rick%20rolled.mp4';
+                });
+
+                var yesButton = document.querySelector('#yes-button');
+                yesButton.addEventListener('click', function() {
+                    window.location.href = 'imagens/rick%20rolled.mp4';
+                });
+            } else {
+                var buttonWidth = noButton.offsetWidth;
+                var buttonHeight = noButton.offsetHeight;
+                var maxLeft = window.innerWidth - buttonWidth;
+                var maxTop = window.innerHeight - buttonHeight;
+                var randomX = Math.random() * maxLeft;
+                var randomY = Math.random() * maxTop;
+                noButton.style.left = randomX + 'px';
+                noButton.style.top = randomY + 'px';
+            }
+        }
+
+        noButton.addEventListener('mouseover', moveButton);
+    </script>
+</body>
+</html>

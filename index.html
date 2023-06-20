@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Portfólio</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: linear-gradient(to bottom, #007bff, #7c99b8);
+        }
+
+        header {
+            background-color: #333;
+            padding: 20px;
+            color: #fff;
+            text-align: center;
+        }
+
+        header h1 {
+            font-size: 24px;
+            margin: 0;
+        }
+
+        /* Estilos do footer */
+        footer {
+            background-color: #333;
+            padding: 10px;
+            color: #fff;
+            text-align: center;
+        }
+
+        footer p {
+            margin: 0;
+        }
+
+        /* Estilos existentes omitidos para maior clareza */
+
+        h1 {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+
+        h3 {
+            font-size: 20px;
+            margin-bottom: 10px;
+            border-top: 1px solid #ccc;
+            padding-top: 20px;
+        }
+
+        p {
+            font-size: 16px;
+            margin-bottom: 20px;
+        }
+
+        #carousel {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 20px;
+            border: 1px solid #ccc;
+            padding: 10px;
+            max-width: 600px;
+            max-height: 400px;
+            overflow: hidden;
+        }
+
+        #carousel a {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            margin: 0 10px;
+            text-decoration: none;
+            color: #333;
+            transition: opacity 0.3s ease;
+        }
+
+        #carousel img {
+            width: 600px;
+            height: 400px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: opacity 0.3s ease;
+        }
+
+        #carousel a:first-child {
+            display: flex;
+        }
+
+        #carousel a.fade-out {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        #carousel a.fade-in {
+            opacity: 1;
+            animation: fade 1s linear;
+        }
+
+        #carousel a.fade-out img {
+            animation: none;
+        }
+
+        #carousel a.fade-in img {
+            animation: fade 1s linear;
+        }
+
+        .carousel-text {
+            margin-top: 10px;
+        }
+
+        .carousel-text span {
+            display: none;
+        }
+
+        #carousel a:hover .carousel-text span {
+            display: inline-block;
+        }
+
+        .carousel-nav {
+            display: flex;
+            justify-content: center;
+            margin-top: 10px;
+        }
+
+        .carousel-nav button {
+            font-size: 18px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            transition: opacity 0.3s ease;
+        }
+
+        .carousel-nav button:hover {
+            opacity: 0.7;
+        }
+
+        .clock {
+            font-size: 24px;
+            margin-top: 20px;
+            color: #333;
+        }
+
+        @keyframes fade {
+            0% {
+                opacity: 0;
+            }
+
+            100% {
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <h1>Portfólio Gustavo Kazuo Momma</h1>
+    </header>
+    <h1>Prova Sérgio</h1>
+
+    <div id="carousel">
+        <a href="calculadora.html" class="fade-in">
+            <img src="imagens/calculadora.jpg" alt="Calculadora">
+            <span class="carousel-text">Calculadora</span>
+        </a>
+        <a href="dino_game_remake.html" class="fade-out">
+            <img src="imagens/dinogoogle.png" alt="Dino Game Remake">
+            <span class="carousel-text">Dino Game Remake</span>
+        </a>
+        <a href="sistema_escolar.html" class="fade-out">
+            <img src="imagens/gestão de notas.jpg" alt="Sistema Escolar">
+            <span class="carousel-text">Sistema Escolar</span>
+        </a>
+        <a href="avaliacao.html" class="fade-out">
+            <img src="imagens/joia.jpg" alt="Avaliação">
+            <span class="carousel-text">Avaliação</span>
+        </a>
+    </div>
+
+    <h3>Portfólio para nota equivalente ao terceiro semestre de programação.</h3>
+
+    <div class="carousel-nav">
+        <button onclick="previousSlide()">&#10094;</button>
+        <button onclick="nextSlide()">&#10095;</button>
+    </div>
+    <div class="clock" id="clock"></div>
+    <footer>
+        <p>&copy; 2023 Gustavo Kazuo Momma</p>
+    </footer>
+    <script>
+        // Carrossel
+        var carousel = document.getElementById('carousel');
+        var currentIndex = 0;
+        var slides = carousel.getElementsByTagName('a');
+        var slideInterval = setInterval(nextSlide, 5000);
+
+        function showSlide(index) {
+            for (var i = 0; i < slides.length; i++) {
+                slides[i].classList.remove('fade-in');
+                slides[i].classList.remove('fade-out');
+                slides[i].style.display = 'none';
+            }
+            slides[index].style.display = 'flex';
+            slides[index].classList.add('fade-in');
+            var nextIndex = (index + 1) % slides.length;
+            slides[nextIndex].classList.add('fade-out');
+        }
+
+        function nextSlide() {
+            currentIndex = (currentIndex + 1) % slides.length;
+            showSlide(currentIndex);
+        }
+
+        function previousSlide() {
+            currentIndex = (currentIndex - 1 + slides.length) % slides.length;
+            showSlide(currentIndex);
+        }
+
+        carousel.addEventListener('mouseover', function () {
+            clearInterval(slideInterval);
+        });
+
+        carousel.addEventListener('mouseout', function () {
+            slideInterval = setInterval(nextSlide, 5000);
+        });
+
+        showSlide(currentIndex);
+        function updateTime() {
+            var clockElement = document.getElementById('clock');
+            var now = new Date();
+            var hours = now.getHours();
+            var minutes = now.getMinutes();
+            var seconds = now.getSeconds();
+            var day = now.getDate();
+            var month = now.getMonth() + 1; // Os meses são indexados de 0 a 11, então adicionamos 1
+            var year = now.getFullYear();
+            var timeString = formatTime(hours) + ':' + formatTime(minutes) + ':' + formatTime(seconds);
+            var dateString = formatTime(day) + '/' + formatTime(month) + '/' + year;
+            clockElement.textContent = timeString + ' ' + dateString;
+        }
+
+        function formatTime(timeValue) {
+            return timeValue < 10 ? '0' + timeValue : timeValue; // Adiciona um zero à esquerda para valores menores que 10
+        }
+
+        setInterval(updateTime, 1000); // Atualiza o horário a cada segundo
+    </script>
+</body>
+
+</html>
